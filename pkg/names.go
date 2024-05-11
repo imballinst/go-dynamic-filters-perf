@@ -1,7 +1,7 @@
 package helper
 
 var (
-	Names = [][]string{
+	names = [][]string{
 		{
 			"Gavin",
 			"Crawford",
@@ -952,7 +952,7 @@ var (
 		},
 	}
 
-	Countries = []string{
+	countries = []string{
 		"Afghanistan",
 		"Åland Islands",
 		"Albania",

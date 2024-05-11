@@ -1,6 +1,7 @@
 version: '3.8'
 
 volumes:
+  pga-data:
   postgres-data:
 
 services:
