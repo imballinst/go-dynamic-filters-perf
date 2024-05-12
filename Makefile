@@ -4,7 +4,7 @@ build:
 
 .PHONY: up
 up:
-	docker-compose up --force-recreate
+	docker-compose up --force-recreate -d
 
 .PHONY: down
 down:
