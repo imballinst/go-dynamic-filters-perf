@@ -74,11 +74,15 @@ func fetch(it int, ch chan<- int, wg *sync.WaitGroup) {
 
 		queryParamsJoined := strings.Join(queryParams[queryParamsSliceStart:queryParamsSliceEnd], "&")
 
-		resp, _ := http.Get(fmt.Sprintf("http://localhost:3000?%s", queryParamsJoined))
+		resp, err := http.Get(fmt.Sprintf("http://localhost:3000?%s", queryParamsJoined))
+		wg.Done()
+
+		if err != nil {
+			continue
+		}
+
 		responseTimeStr := resp.Header.Get("response-time")
 		responseTime, _ := strconv.Atoi(responseTimeStr)
-
-		wg.Done()
 		ch <- responseTime
 	}
 }

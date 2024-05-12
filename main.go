@@ -65,7 +65,7 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 
 	// Test fixed query.
 	for k, v := range queries {
-		whereClauseArray = append(whereClauseArray, fmt.Sprintf("%s='%s'", k, v))
+		whereClauseArray = append(whereClauseArray, fmt.Sprintf("%s='%s'", k, strings.ReplaceAll(v, "'", "''")))
 	}
 
 	// Test dynamic query.
