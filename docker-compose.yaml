@@ -12,9 +12,18 @@ services:
     volumes:
       - service-data:/workspaces/go-dynamic-filters-perf
     env_file:
-      - .env
+      - .env.local
     depends_on:
       - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 100M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+
 
   db:
     image: postgres:latest
@@ -23,4 +32,4 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     env_file:
-      - .env
+      - .env.local

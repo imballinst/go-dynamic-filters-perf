@@ -23,7 +23,7 @@ func main() {
 		port = "3000"
 	}
 
-	envFile, _ := godotenv.Read(".devcontainer/.env")
+	envFile, _ := godotenv.Read(".env")
 
 	connStr := fmt.Sprintf("postgresql://%s:%s@%s/%s?sslmode=disable", envFile["POSTGRES_USER"], envFile["POSTGRES_PASSWORD"], envFile["POSTGRES_HOSTNAME"], envFile["POSTGRES_DB"])
 	// Connect to database
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// TODO: uncomment if we want to re-setup.
-	// helper.SetupTable(db)
+	helper.SetupTable(db)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return indexHandler(c, db)

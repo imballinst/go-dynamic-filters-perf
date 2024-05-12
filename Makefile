@@ -4,8 +4,12 @@ build:
 
 .PHONY: up
 up:
-	docker-compose up --force-recreate
+	docker-compose up
 
 .PHONY: down
 down:
 	docker-compose down --volumes
+	
+.PHONY: dev
+dev:
+	docker-compose -f docker-compose.dev.yaml up
