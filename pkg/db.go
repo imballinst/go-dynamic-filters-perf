@@ -32,9 +32,6 @@ func SetupTable(db *sql.DB) {
 		panic(err)
 	}
 
-	namesLength := len(names)
-	countriesLength := len(countries)
-
 	for it := 1; it < 11; it++ {
 		fmt.Printf("Iteration %d\n", it)
 
@@ -45,13 +42,13 @@ func SetupTable(db *sql.DB) {
 			id := uuid.New().String()
 			clubId := uuid.New().String()
 
-			firstNameIdx := rand.Intn(namesLength)
-			lastNameIdx := rand.Intn(namesLength)
+			firstNameIdx := rand.Intn(NamesLength)
+			lastNameIdx := rand.Intn(NamesLength)
 
 			firstName := names[firstNameIdx][0]
 			lastName := names[lastNameIdx][1]
 			name := firstName + " " + lastName
-			country := countries[rand.Intn(countriesLength)]
+			country := countries[rand.Intn(CountriesLength)]
 			shirtName := firstName
 
 			if rand.Intn(2) == 1 {
@@ -72,4 +69,24 @@ func SetupTable(db *sql.DB) {
 			panic(err)
 		}
 	}
+}
+
+func GetRandomValues() (string, string, string, string, string) {
+	id := uuid.New().String()
+	clubId := uuid.New().String()
+
+	firstNameIdx := rand.Intn(NamesLength)
+	lastNameIdx := rand.Intn(NamesLength)
+
+	firstName := names[firstNameIdx][0]
+	lastName := names[lastNameIdx][1]
+	name := firstName + " " + lastName
+	country := countries[rand.Intn(CountriesLength)]
+	shirtName := firstName
+
+	if rand.Intn(2) == 1 {
+		shirtName = lastName
+	}
+
+	return id, clubId, name, country, shirtName
 }

@@ -1197,4 +1197,7 @@ var (
 		"Zambia",
 		"Zimbabwe",
 	}
+
+	NamesLength     = len(names)
+	CountriesLength = len(countries)
 )

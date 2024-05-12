@@ -2,29 +2,18 @@ package main
 
 import (
 	"fmt"
+	helper "go-dynamic-filters-perf/pkg"
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 )
 
 const (
 	outerLoop = 10
 	// innerLoop = 100_000
-	innerLoop = 100
-)
-
-var (
-	queryParameters = []string{
-		"",
-		"?shirt_name=Campbell",
-		"?shirt_name=Campbell&country=Netherlands",
-		"?shirt_name=Campbell&country=Netherlands&club_id=3e0f6c25-c31d-4bc8-9cbf-b99cd7f08281",
-		"?country=Indonesia",
-		"?name=Hello world",
-		"?name=Hello world&shirt_name=world&country=Netherlands",
-		"?name=Hello world&shirt_name=world&country=Netherlands&club_id=3e0f6c25-c31d-4bc8-9cbf-b99cd7f08281",
-	}
+	innerLoop = 1
 )
 
 func main() {
@@ -57,12 +46,28 @@ func main() {
 func fetch(it int, ch chan<- int, wg *sync.WaitGroup) {
 	fmt.Println("Iteration", it)
 
-	queryParamsLen := len(queryParameters)
-
 	for i := 0; i < innerLoop; i++ {
-		queryParams := queryParameters[rand.Intn(queryParamsLen)]
+		id, clubId, name, country, shirtName := helper.GetRandomValues()
+		queryParams := []string{
+			fmt.Sprintf("id=%s", id),
+			fmt.Sprintf("club_id=%s", clubId),
+			fmt.Sprintf("name=%s", name),
+			fmt.Sprintf("country=%s", country),
+			fmt.Sprintf("shirt_name=%s", shirtName),
+		}
 
-		resp, _ := http.Get(fmt.Sprintf("http://localhost:3000%s", queryParams))
+		queryParamsSliceStart := rand.Intn(len(queryParams))
+		queryParamsSliceEnd := rand.Intn(len(queryParams))
+
+		if queryParamsSliceEnd < queryParamsSliceStart {
+			tmp := queryParamsSliceEnd
+			queryParamsSliceEnd = queryParamsSliceStart
+			queryParamsSliceStart = tmp
+		}
+
+		queryParamsJoined := strings.Join(queryParams[queryParamsSliceStart:queryParamsSliceEnd], "&")
+
+		resp, _ := http.Get(fmt.Sprintf("http://localhost:3000?%s", queryParamsJoined))
 		responseTimeStr := resp.Header.Get("response-time")
 		responseTime, _ := strconv.Atoi(responseTimeStr)
 
