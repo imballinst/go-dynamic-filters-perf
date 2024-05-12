@@ -5,6 +5,7 @@ import (
 	helper "go-dynamic-filters-perf/pkg"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -12,11 +13,17 @@ import (
 
 const (
 	outerLoop = 10
-	// innerLoop = 100_000
-	innerLoop = 1
+)
+
+var (
+	innerLoop, _ = strconv.Atoi(os.Getenv("LOOPS"))
 )
 
 func main() {
+	if innerLoop == 0 {
+		panic("please set LOOPS environment variable")
+	}
+
 	maxResponseTime := -1
 
 	// Fetch.
