@@ -1,8 +1,8 @@
 version: '3.8'
 
 volumes:
-  postgres-data:
-  service-data:
+  postgres-data: ./postgres-data
+  service-data: ./service-data
 
 services:
   service:
@@ -21,6 +21,6 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - postgres-data:/workspaces/go-dynamic-filters-perf
+      - postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
