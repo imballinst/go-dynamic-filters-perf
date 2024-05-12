@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -43,6 +44,8 @@ func main() {
 
 // Routes.
 func indexHandler(c *fiber.Ctx, db *sql.DB) error {
+	start := time.Now()
+
 	queries := c.Queries()
 	players := []helper.Player{}
 
@@ -50,38 +53,41 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 
 	// Test fixed query.
 	for k, v := range queries {
-		whereClauseArray = append(whereClauseArray, fmt.Sprintf("%s = %s", k, v))
+		whereClauseArray = append(whereClauseArray, fmt.Sprintf("%s='%s'", k, v))
 	}
 
 	// Test dynamic query.
 
 	whereClause := ""
-	filterClause := ""
-	if (len(whereClauseArray) > 0) {
+	// filterClause := ""
+	if len(whereClauseArray) > 0 {
 		whereClause = fmt.Sprintf("WHERE %s", strings.Join(whereClauseArray, " AND "))
-		filterClause = fmt.Sprintf("FILTER(%s) as referred FROM players", whereClause)
+		// filterClause = fmt.Sprintf("FILTER(%s) as referred FROM players", whereClause)
 	}
-	
-	query := fmt.Sprintf("SELECT COUNT(*) FROM players %s", filterClause)
-	fmt.Printf("%s\n", query)
 
-	totalRows, err := db.Query(query)
+	// query := fmt.Sprintf("SELECT COUNT(*) FROM players %s", filterClause)
+	// fmt.Printf("%s\n", query)
+
+	// totalRows, err := db.Query(query)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// 	c.JSON("An error occured")
+	// }
+	// defer totalRows.Close()
+
+	// query = fmt.Sprintf("SELECT * FROM players LIMIT 10 %s", whereClause)
+	// fmt.Printf("%s\n", query)
+
+	query := fmt.Sprintf("SELECT * FROM players %s LIMIT 10", whereClause)
+	fmt.Println(query)
+
+	rows, err := db.Query(query)
 	if err != nil {
 		log.Fatalln(err)
-		c.JSON("An error occured")
-	}
-	defer totalRows.Close()
-
-	query = fmt.Sprintf("SELECT * FROM players LIMIT 10 %s", whereClause)
-	fmt.Printf("%s\n", query)
-
-	rows, err := db.Query(fmt.Sprintf("SELECT * FROM players LIMIT 10 %s", whereClause))
-	if err != nil {
-		log.Fatalln(err)
-		c.JSON("An error occured")
+		return c.JSON("An error occured")
 	}
 	defer rows.Close()
-	
+
 	for rows.Next() {
 		var id uuid.UUID
 		var clubId uuid.UUID
@@ -91,21 +97,20 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 
 		rows.Scan(&id, &clubId, &name, &country, &shirtName)
 		players = append(players, helper.Player{
-			ID: id,
-			ClubId: clubId,
-			Name: name,
-			Country: country,
+			ID:        id,
+			ClubId:    clubId,
+			Name:      name,
+			Country:   country,
 			ShirtName: shirtName,
 		})
 	}
 
-	var totalData int
-	for totalRows.Next() {
-		totalRows.Scan(&totalData)
-	}
+	end := time.Now()
+	diff := end.UTC().Unix() - start.UTC().Unix()
+
+	c.Append("response-time", fmt.Sprintf("%d", diff))
 
 	return c.JSON(fiber.Map{
 		"players": players,
-		"totalData": totalData,
 	})
 }
