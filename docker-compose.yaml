@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - service-data:/
+      - service-data:/workspaces/go-dynamic-filters-perf
     env_file:
       - .env
     depends_on:
