@@ -91,7 +91,7 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 	// fmt.Printf("%s\n", query)
 
 	query := fmt.Sprintf("SELECT * FROM players %s LIMIT 10", whereClause)
-	fmt.Println(query)
+	// fmt.Println(query)
 
 	rows, err := db.Query(query)
 	if err != nil {
