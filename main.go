@@ -25,7 +25,7 @@ func main() {
 
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("[WARN]: %s", err.Error())
+		fmt.Printf("[WARN]: %s\n", err.Error())
 	}
 
 	connStr := fmt.Sprintf(
