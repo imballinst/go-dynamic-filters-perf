@@ -11,7 +11,7 @@ import (
 const (
 	outerLoop = 10
 	// innerLoop = 100_000
-	innerLoop = 1000
+	innerLoop = 100
 )
 
 var (

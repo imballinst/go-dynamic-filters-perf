@@ -43,7 +43,9 @@ func main() {
 	}
 
 	// TODO: uncomment if we want to re-setup.
-	helper.SetupTable(db)
+	if os.Getenv("SEED_DATA") == "true" {
+		helper.SetupTable(db)
+	}
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return indexHandler(c, db)
