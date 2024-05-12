@@ -23,9 +23,19 @@ func main() {
 		port = "3000"
 	}
 
-	envFile, _ := godotenv.Read(".env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("[WARN]: %s", err.Error())
+	}
 
-	connStr := fmt.Sprintf("postgresql://%s:%s@%s/%s?sslmode=disable", envFile["POSTGRES_USER"], envFile["POSTGRES_PASSWORD"], envFile["POSTGRES_HOSTNAME"], envFile["POSTGRES_DB"])
+	connStr := fmt.Sprintf(
+		"postgresql://%s:%s@%s/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_HOSTNAME"),
+		os.Getenv("POSTGRES_DB"),
+	)
+
 	// Connect to database
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
